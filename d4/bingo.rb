@@ -63,7 +63,7 @@ def runBingo()
 		cards.each do |card|
 			card.call_number(number)
 			if card.check_win
-				if cards.select{|c|c.check_win }.size == 1 && first_card == nil
+				if first_card == nil
 					first_card = card
 					puts "Card score: #{card.card_score}"
 					puts "Solution part 1: #{card.card_score * number}".green
