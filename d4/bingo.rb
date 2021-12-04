@@ -26,10 +26,6 @@ class BingoCard
 		@rows.flatten.select{|c|!c.score}.inject(0){|sum,c| sum + c.value}
 	end
 
-	def to_s
-		rows.map{|r| r.map{|f| f.to_s }.join("|") }.join("\n") 
-	end
-
 	def call_number(number)
 		@rows.flatten.each { |field| field.score = true if (field.value == number) }
 	end
@@ -42,10 +38,6 @@ class BingoField
 	def initialize(value)
 		@value = value
 		@score = false
-	end
-
-	def to_s
-		@score ? 'x' : '.'
 	end
 end
 
