@@ -11,7 +11,7 @@ class BingoCard
 	end
 
 	def check_win
-		return check_horizonal_win || check_vertical_win
+		check_horizonal_win || check_vertical_win
 	end
 
 	def check_vertical_win
@@ -31,9 +31,7 @@ class BingoCard
 	end
 
 	def call_number(number)
-		@rows.flatten.each do |field|
-			field.score = true if (field.value == number)
-		end
+		@rows.flatten.each { |field| field.score = true if (field.value == number) }
 	end
 end
 
@@ -66,51 +64,29 @@ def read_cards()
 	cards
 end
 
-def problem1()
+def runBingo()
+	first_card = nil
 	cards = read_cards()
 	NUMBERS.each do |number|
-		puts "Calling: #{number}"
 		cards.each do |card|
 			card.call_number(number)
 			if card.check_win
-				pp "We have a winner..."
-				puts card
-				puts "------------------------------"
-
-				cards.each do |c|
-					if c.check_win
-						puts c.to_s.green
-					else
-						puts c.to_s
-					end
-					puts "------------------------------"
+				if cards.select{|c|c.check_win }.size == 1 && first_card == nil
+					first_card = card
+					puts "Card score: #{card.card_score}"
+					puts "Solution part 1: #{card.card_score * number}".green
 				end
-
-				puts "Card score: #{card.card_score}"
-				puts "Solution: #{card.card_score * number}".green
-				return
+				if cards.all?{|c| c.check_win }
+					puts "Card score: #{card.card_score}"
+					puts "Solution part 2: #{card.card_score * number}".green
+					return
+				end
 			end
 		end
 	end
 end
 
-def problem2()
-	cards = read_cards()
-	NUMBERS.each do |number|
-		puts "Calling: #{number}"
-		cards.each do |card|
-			card.call_number(number)
-			if cards.all?{|c| c.check_win }
-				puts "Card score: #{card.card_score}"
-				puts "Solution: #{card.card_score * number}".green
-				return
-			end
-		end
-	end
-end
-
-problem1()
-problem2()
+runBingo()
 
 
 
