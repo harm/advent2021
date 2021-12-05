@@ -17,29 +17,22 @@ class Line
 
   def points_on_line
     points = []
+    xdif = ([@a.x, @b.x].max - [@a.x, @b.x].min)
+    ydif = ([@a.y, @b.y].max - [@a.y, @b.y].min)
+    startx = [@a.x, @b.x].min
+    starty = [@a.y, @b.y].min
+
     if !is_horizontal_or_vertical?
       rc = (@b.y - @a.y) / (@b.x - @a.x)
       b = @a.y - (rc * @a.x)
-      xdif = ([@a.x, @b.x].max - [@a.x, @b.x].min)
-      startx = [@a.x, @b.x].min
       (xdif + 1).times do |x|
         xc = startx + x
-        # now find yc
         yc = rc * xc + b
         points << Point.new(xc, yc)
       end
-  else
-      xdif = ([@a.x, @b.x].max - [@a.x, @b.x].min)
-      ydif = ([@a.y, @b.y].max - [@a.y, @b.y].min)
-      if (xdif > 0)
-        startx = [@a.x, @b.x].min
-        (xdif + 1).times{|i| points << Point.new((startx + i), @a.y) }
-      elsif (ydif > 0)
-        starty = [@a.y, @b.y].min
-        (ydif + 1).times{|i| points << Point.new(@a.x, (starty + i)) }
-      else
-        throw Exception "Something is wrong"
-      end
+    else      
+      (xdif + 1).times{|i| points << Point.new((startx + i), @a.y) } if xdif > 0
+      (ydif + 1).times{|i| points << Point.new(@a.x, (starty + i)) } if ydif > 0
     end
     points
   end
