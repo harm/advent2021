@@ -41,7 +41,6 @@ class BingoField
 	end
 end
 
-
 def read_cards()
 	cards = []
 	card = BingoCard.new
