@@ -99,13 +99,8 @@ class Graph
   def paths_count2(node, visited_prev = [])
     return 1 if node == end_node
     visited = visited_prev + [node]
-
-    tallied = visited.tally
-
     to_traverse = node.connections.reject{|c| c == start_node}
-
     to_traverse = to_traverse.select do |c|
-
       small_caves = visited.reject{|c| c.big_cave? }
       small_caves_tallied = small_caves.tally
       no_small_caves_were_visited_twice = small_caves_tallied.all?{|small_cave, value| value < 2 }
