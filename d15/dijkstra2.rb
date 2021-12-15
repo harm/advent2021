@@ -1,7 +1,7 @@
 require 'rgl/adjacency'
 require 'rgl/dijkstra'
 require 'rgl/dot'
-
+require 'benchmark'
 
 # internal counter for id-labels of the cells (I don't like using arrays as mapping values in hashes)
 $id = 0
@@ -45,33 +45,36 @@ end
 
 # read input file
 INPUT = File.read("input.txt")
-
-# part 1
 data = []
 INPUT.split("\n").each_with_index do |line, y|
   data << line.chomp.chars.each_with_index.map{|col,x| Point.new(x, y, col) }
 end
 
-# set the first cell risk to zero
-data.first.first.risk = 0
+time = Benchmark.measure {
+  # part 1
 
-graph, edge_weights = create_graph(data)
-values =  graph.dijkstra_shortest_path(edge_weights, data.first.first.id, data.last.last.id)
-puts values.map{|v| data.flatten.find{|p| p.id == v }.risk }.sum
+  # set the first cell risk to zero
+  data.first.first.risk = 0
+  graph, edge_weights = create_graph(data)
+  values =  graph.dijkstra_shortest_path(edge_weights, data.first.first.id, data.last.last.id)
+  puts values.map{|v| data.flatten.find{|p| p.id == v }.risk }.sum
+}
+puts time.real
 
-graph.write_to_graphic_file('jpg')
-
-#part 2
-data2 = Array.new(data.length*5) do |y|
-  Array.new(data[0].length*5) do |x|
-    risk = data[y % data.length][x % data[0].length].risk + y/data.length + x/data[0].length
-    Point.new(x, y, (risk % 10 + risk/10))
+time = Benchmark.measure {
+  #part 2
+  data2 = Array.new(data.length*5) do |y|
+    Array.new(data[0].length*5) do |x|
+      risk = data[y % data.length][x % data[0].length].risk + y/data.length + x/data[0].length
+      Point.new(x, y, (risk % 10 + risk/10))
+    end
   end
-end
 
-# again, first cell risk is zero
-data2.first.first.risk = 0
+  # again, first cell risk is zero
+  data2.first.first.risk = 0
 
-graph, edge_weights = create_graph(data2)
-values =  graph.dijkstra_shortest_path(edge_weights, data2.first.first.id, data2.last.last.id)
-puts values.map{|v| data2.flatten.find{|p| p.id == v }.risk }.sum
+  graph, edge_weights = create_graph(data2)
+  values =  graph.dijkstra_shortest_path(edge_weights, data2.first.first.id, data2.last.last.id)
+  puts values.map{|v| data2.flatten.find{|p| p.id == v }.risk }.sum
+}
+puts time.real
