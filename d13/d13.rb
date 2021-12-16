@@ -27,7 +27,7 @@ class Grid
 
   def initialize(input)
     @coordinates = []
-    @folds = %w[X-655 Y-447 X-327 Y-223 X-163 Y-111 X-81 Y-55 X-40 Y-27 Y-13 Y-6]
+    @folds = %w[X-655 Y-447 X-327 Y-223 X-163 Y-111 X-81 Y-55 X-40 Y-27 Y-d13 Y-6]
     input.split("\n").each do |row|
       x, y = row.chomp.split(",")
       @coordinates << Point.new(x.to_i,y.to_i)

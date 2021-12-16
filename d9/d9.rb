@@ -1,5 +1,4 @@
 require 'pp'
-require "byebug"
 require 'set'
 
 INPUT = %Q{2199943210
@@ -10,19 +9,20 @@ INPUT = %Q{2199943210
 
 LIMIT = 9
 
-Point = Struct.new(:x, :y, :val, :walked)
+Point = Struct.new(:x, :y, :val, :marked)
 
 class HeightMap
 
 	def initialize
 		@input = []
-		#input = INPUT.strip.split("\n").each_with_index do |line, y|
-		input = File.read("input.txt").split(/\n/).each_with_index do |line, y|
+		input = INPUT.strip.split("\n").each_with_index do |line, y|
+		#input = File.read("input.txt").split(/\n/).each_with_index do |line, y|
 			@input[y] = line.chars.each_with_index.map do |v,x| 
 				p = Point.new
 				p.x = x.to_i
 				p.y = y.to_i
 				p.val = v.to_i
+				p.marked = false
 				p
 			end
 		end
@@ -34,7 +34,7 @@ class HeightMap
 		str = ""
 		@input.each do |row|
 			row.each do |col|
-				str << col.val.to_s
+				str << (col.marked ? "*" : col.val.to_s)
 			end
 			str << "\n"
 		end
@@ -47,22 +47,10 @@ class HeightMap
 
 	def get_neighbours(x,y)
 		neighbours = []
-
-		if x > 0
-	        neighbours << get_point(x-1,y)
-	    end
-
-	    if x < @max_x - 1
-	        neighbours << get_point(x+1,y)
-	    end
-
-	    if y > 0
-	        neighbours << get_point(x,y-1)
-	    end
-
-	    if y < @max_y - 1
-	        neighbours << get_point(x,y+1)
-	    end
+        neighbours << get_point(x-1,y) if x > 0
+        neighbours << get_point(x+1,y) if x < @max_x - 1
+        neighbours << get_point(x,y-1) if y > 0
+        neighbours << get_point(x,y+1) if y < @max_y - 1
 		neighbours
 	end
 
@@ -90,7 +78,6 @@ class HeightMap
 	end
 end
 
-
 hm = HeightMap.new
 
 # # #puts hm.to_s
@@ -99,14 +86,18 @@ low_points =  hm.find_low_points
 pp "Score problem1: #{low_points.map{|v| v.val + 1}.sum}"
 pp low_points
 
-
 basins = []
 low_points.each do |point|
     set = Set.new([point.x, point.y])
     basin = hm.find_basin(set, point)
+    puts basin.inspect
     basins << set.size       
 end
 top_3 = basins.max(3)
+
+puts hm.to_s
+
+puts top_3.inspect
 solution = top_3[0] * top_3[1] * top_3[2]
 pp "Solution problem2: #{solution}"
 
